@@ -8,114 +8,166 @@ public class Main {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String str = reader.readLine();
         int count = Integer.parseInt(str);
-        int length = 200008;
-        Deque deck = new Deque(length);
-        while(count != 0){
+        Deque deck = new Deque();
+        while(count != 0) {
             String operation = reader.readLine();
             String[] command = operation.split(" ");
             //System.out.println(operation);
-            if (Objects.equals(operation,"pop_front")) {
-                deck.pop_front();
+            if (operation.equals("pop_front")) {
+                if (deck.isEmpty()) {
+                   System.out.println("error");  
+                } else {
+                    System.out.println(deck.pop_front());
+                }
             }
-            if (Objects.equals(operation, "pop_back")) {
-                deck.pop_back();
+            if (operation.equals("pop_back")) {
+                if (deck.isEmpty()) {
+                   System.out.println("error");  
+                } else {
+                    System.out.println(deck.pop_back());
+                }
             }
-            if (Objects.equals(operation, "clear")) {
+            if (operation.equals("clear")) {
                 deck.clear();
+                System.out.println("ok");
             }
-            if (Objects.equals(operation, "back")) {
-                deck.back();
+            if (operation.equals("back")) {
+                if (deck.isEmpty()) {
+                   System.out.println("error");  
+                } else {
+                    System.out.println(deck.back());
+                }
             }
-            if (Objects.equals(operation, "front")) {
-                deck.front();
+            if (operation.equals("front")) {
+                if (deck.isEmpty()) {
+                   System.out.println("error");  
+                } else {
+                    System.out.println(deck.front());
+                }
             }
-            if (Objects.equals(operation, "size")) {
-                deck.size();
+            if (operation.equals( "size")) {
+                System.out.println(deck.size());
             }
-            if (Objects.equals(operation, "exit")) {
-                System.out.println("bye\n");
+            if (operation.equals("exit")) {
+                System.out.println("bye");
                 break;
-            }
+            } 
             if (command.length == 2){
                 int num = Integer.parseInt(command[1]);
-                if (command[0].equals("push_back"))
+                if (command[0].equals("push_back")){
                     deck.push_back(num);
-                else
+                    System.out.println("ok");
+                } else {
                     deck.push_front(num);
+                    System.out.println("ok");
+                }
             }
-            count = count - 1;
+            count -= 1;
         }
     }
 
     public static class Deque {
-        private int[] queue;
+        private int[] array;
         private int size;
         private int front;
         private int back;
+        private int capacity;
 
-        Deque (int maxnumber) {
-            queue = new int[maxnumber];
-            front = 100000;
-            back = 99999;
+        Deque () {
+            capacity = 3;
+            array = new int[capacity];
+            front = -1;
+            back = 0;
             size = 0;
         }
 
         public boolean isEmpty() {
             return (size == 0);
         }
+        public void resize(){
+            int[] array2 = new int[capacity * 2];
+            front = back + 1;
+            for (int i = 0; i < capacity; i++) {
+                if (front == 0) {
+                    front = capacity * 2 - 1;
+                } else {
+                    front--;
+                }
+                array2[front] = array[front % capacity];
+            }
+            array = array2;
+            capacity *= 2;
+        }
 
         public void push_front(int x) {
-            front = front - 1;
-            queue[front] = x;
-            System.out.println("ok");
-            size = size + 1;
+            if (size == capacity) {
+                resize();
+            }
+            if (isEmpty()){
+                front = -1;
+                back = 0;
+                array[0] = x;
+            } else if (front == 0) {
+                front = capacity - 1;
+                array[front] = x;
+            } else {
+                array[--front] = x;
+            }
+            size += 1;
         }
+        
         public void push_back(int x) {
-            back = back + 1;
-            queue[back] = x;
-            System.out.println("ok");
-            size = size + 1;
+            if (size == capacity) {
+                resize();
+            }
+            if (isEmpty()){
+                front = -1;
+                back = 0;
+                array[back] = x;
+            } else if (back == capacity - 1) {
+                back = 0;
+                array[back] = x;
+            } else {
+                array[++back] = x;
+            }
+            size += 1;
         }
 
-        public void pop_front() {
-            if (isEmpty()) {
-                System.out.println("error");
+        public int pop_front() {
+            int answer = array[front];
+            array[front] = 0;
+            if (front == capacity - 1){
+                front = 0;
             } else {
-                System.out.println(queue[front]);
-                front = front + 1;
-                size = size - 1;
+                front++;
             }
+            size -= 1;
+            return answer;
         }
-        public void pop_back() {
-            if (isEmpty()) {
-                System.out.println("error");
+        public int pop_back() {
+            int answer = array[back];
+            array[back] = 0;
+            if (back == 0){
+                back = capacity - 1;
             } else {
-                System.out.println(queue[back]);
-                back = back - 1;
-                size = size - 1;
+                back--;
             }
+            size -= 1;
+            return answer;
         }
         public int size() {
-            System.out.println(size);
             return size;
         }
-        public void front() {
-            if (isEmpty()) {
-                System.out.println("error");
-            } else
-                System.out.println(queue[front]);
+        public int front() {
+            return array[front];
         }
-        public void back() {
-            if (isEmpty()) {
-                System.out.println("error");
-            } else
-                System.out.println(queue[back]);
+        public int back() {
+            return array[back];
         }
         public void clear() {
-            front = 100000;
-            back = 99999;
+            front = -1;
+            back = 0;
             size = 0;
-            System.out.println("ok");
         }
     }
 }
