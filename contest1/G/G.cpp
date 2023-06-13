@@ -1,15 +1,19 @@
 #include <algorithm>
 #include <iostream>
-int Check(int number, int lighted, int light, const int* recievers,
+
+void Check (int number, const int* recievers, int& light, int& lighted, int mid) {
+  for (int i = 0; i < number; i++) {
+    if (recievers[i] > lighted) {
+      light = light + 1, lighted = recievers[i] + mid;
+    }
+  }
+}
+int BinarySearch(int number, int lighted, int light, const int *recievers,
           int wizards) {
   int right = recievers[number - 1] - recievers[0], mid = right / 2;
   int left = 0;
   while (right - left > 1) {
-    for (int i = 0; i < number; i++) {
-      if (recievers[i] > lighted) {
-        light = light + 1, lighted = recievers[i] + mid;
-      }
-    }
+    Check(number, recievers, light, lighted, mid);
     if (light <= wizards) {
       right = mid;
     } else {
@@ -21,7 +25,7 @@ int Check(int number, int lighted, int light, const int* recievers,
 }
 int main() {
   int number, wizards, light = 0;
-  int* recievers;
+  int *recievers;
   std::cin >> number >> wizards;
   recievers = new int[number];
   for (int i = 0; i < number; i++) {
@@ -39,7 +43,7 @@ int main() {
   if (unique <= wizards) {
     std::cout << 0;
   } else {
-    std::cout << Check(number, lighted, light, recievers, wizards);
+    std::cout << BinarySearch(number, lighted, light, recievers, wizards);
   }
   delete[] recievers;
 }
