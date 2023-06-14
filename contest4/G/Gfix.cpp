@@ -48,7 +48,7 @@ class Graph {
   }
 
   void Answer() {
-    for (auto i = int(answer_.size() - 1); i >= 0; i--) {
+    for (auto i = static_cast<int>(answer_.size() - 1); i >= 0; i--) {
       std::cout << answer_[i] + 1 << " ";
     }
   }
